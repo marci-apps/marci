@@ -1,0 +1,16 @@
+{
+  "name": "marci",
+  "description": "Marci for Claude Code: the Marci skill and the Marci MCP server in one plugin.",
+  "owner": {
+    "name": "Marci",
+    "url": "https://getmarci.ai"
+  },
+  "plugins": [
+    {
+      "name": "marci",
+      "source": "./",
+      "description": "The Marci skill plus the Marci MCP server.",
+      "category": "productivity"
+    }
+  ]
+}

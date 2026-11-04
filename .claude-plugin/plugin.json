@@ -1,0 +1,27 @@
+{
+  "name": "marci",
+  "displayName": "Marci",
+  "version": "1.0.0",
+  "description": "Your Marci apps in Claude Code: the Marci skill plus the Marci MCP server, so to-dos, trackers, plans, shared spaces and games are a sentence away.",
+  "author": {
+    "name": "Marci",
+    "url": "https://getmarci.ai"
+  },
+  "homepage": "https://getmarci.ai/connectors",
+  "repository": "https://github.com/marci-apps/marci",
+  "license": "MIT-0",
+  "keywords": [
+    "marci",
+    "apps",
+    "productivity",
+    "todo",
+    "tracker",
+    "games",
+    "mcp"
+  ],
+  "icon": "./.claude-plugin/icon.png",
+  "documentationUrl": "https://github.com/marci-apps/marci#readme",
+  "supportUrl": "https://getmarci.ai/support",
+  "privacyPolicyUrl": "https://getmarci.ai/privacy",
+  "termsOfServiceUrl": "https://getmarci.ai/terms"
+}

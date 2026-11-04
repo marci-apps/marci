@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "marci": {
+      "type": "http",
+      "url": "https://mcp.getmarci.ai/mcp"
+    }
+  }
+}

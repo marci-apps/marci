@@ -1,0 +1,51 @@
+name: Release
+
+# Push a tag that matches SKILL.md's metadata.version (v1.0.1 for "1.0.1").
+# skills.sh, the Claude Code plugin and Hermes read the repository itself, so they
+# pick up main without a step here. This workflow publishes the GitHub release and
+# the ClawHub copy. getmarci.ai fetches the newest release's files on its own side;
+# nothing here reaches into any other repository.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # The ClawHub step runs only when its secret is set.
+    env:
+      CLAWHUB_TOKEN: ${{ secrets.CLAWHUB_TOKEN }}
+      CLAWHUB_OWNER: ${{ secrets.CLAWHUB_OWNER }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/check.mjs
+      - run: node scripts/build.mjs
+
+      - name: GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            dist/site/marci-skill.zip \
+            dist/site/.well-known/agent-skills/marci.tar.gz \
+            --title "Marci skill $GITHUB_REF_NAME" --generate-notes
+
+      - name: ClawHub
+        if: ${{ env.CLAWHUB_TOKEN != '' }}
+        run: |
+          npx -y clawhub@0.25.1 login --token "$CLAWHUB_TOKEN" --label "marci-apps/marci release" --no-input
+          # The built folder holds only the skill files; the repo root reads as a plugin.
+          npx -y clawhub@0.25.1 skill publish dist/site/.well-known/agent-skills/marci \
+            --slug marci --name "Marci" \
+            ${CLAWHUB_OWNER:+--owner "$CLAWHUB_OWNER"} \
+            --version "${GITHUB_REF_NAME#v}" \
+            --changelog "Release $GITHUB_REF_NAME" \
+            --categories productivity \
+            --source-repo "$GITHUB_REPOSITORY" --source-commit "$GITHUB_SHA" --source-ref "$GITHUB_REF_NAME" \
+            --no-input
