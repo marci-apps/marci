@@ -36,3 +36,5 @@ jobs:
         with:
           name: site
           path: dist/site
+          # Everything the site serves sits under .well-known/.
+          include-hidden-files: true
