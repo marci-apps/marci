@@ -62,8 +62,8 @@ agents. Each row then adds the connection.
 | **Hermes Agent** | `hermes skills install https://getmarci.ai/.well-known/agent-skills/marci/SKILL.md`, or `npx skills add marci-apps/marci -a hermes-agent -g`. `hermes skills search marci` finds it through skills.sh and ClawHub | `hermes mcp add marci --url https://mcp.getmarci.ai/mcp --auth oauth` |
 | **Grok Build** | `npx skills add marci-apps/marci -a grok -g` | `grok mcp add marci https://mcp.getmarci.ai/mcp --transport http` |
 | **GitHub Copilot, Windsurf, Goose, Cline, Zed, Kiro, …** | `npx skills add marci-apps/marci -a <agent> -g` ([agent names](https://github.com/vercel-labs/skills/blob/main/docs/agents.md)) | Add a remote MCP server named `marci` with the URL `https://mcp.getmarci.ai/mcp` in the agent's MCP settings |
-| **Claude (web and desktop)** | Download [marci-skill.zip](https://getmarci.ai/marci-skill.zip) and upload it under Customize › Skills | Settings › Connectors › Add custom connector › `https://mcp.getmarci.ai/mcp` |
-| **ChatGPT** | Business and Enterprise plans: upload [marci-skill.zip](https://getmarci.ai/marci-skill.zip) as a skill | Add Marci as a connector with `https://mcp.getmarci.ai/mcp` |
+| **Claude (web and desktop)** | Download [marci-skill.zip](https://getmarci.ai/.well-known/agent-skills/marci-skill.zip) and upload it under Customize › Skills | Settings › Connectors › Add custom connector › `https://mcp.getmarci.ai/mcp` |
+| **ChatGPT** | Business and Enterprise plans: upload [marci-skill.zip](https://getmarci.ai/.well-known/agent-skills/marci-skill.zip) as a skill | Add Marci as a connector with `https://mcp.getmarci.ai/mcp` |
 
 ### Agents that don't install outside skills
 
@@ -168,11 +168,12 @@ read from the repository:
    (the check fails if they differ).
 2. Merge to `main`, then push a matching tag: `git tag v1.0.1 && git push origin v1.0.1`.
 3. The **Release** workflow checks and builds, then:
-   - creates a GitHub release with `marci-skill.zip` and `marci.tar.gz`
+   - creates a GitHub release with `marci-skill.zip`, `marci.tar.gz` and
+     `marci-site.tar.gz` (everything getmarci.ai serves)
    - publishes to ClawHub as `marci` (needs the `CLAWHUB_TOKEN` secret; the
      `CLAWHUB_OWNER` secret publishes under an organisation handle)
-   - getmarci.ai picks up the release's files by itself, so the hosted copy follows
-     each release
+   - getmarci.ai picks up `marci-site.tar.gz` from the newest release by itself,
+     within the hour
 
 The ClawHub step is skipped while its secret is missing. The secrets are
 listed in `.env` (kept out of git); load them with

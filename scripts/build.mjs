@@ -4,8 +4,10 @@
 //   dist/site/.well-known/agent-skills/marci.tar.gz    the skill, SKILL.md at the archive root
 //   dist/site/.well-known/agent-skills/marci/…         the same files, one by one, for
 //                                                       agents installing from a SKILL.md link
-//   dist/site/marci-skill.zip                          the skill folder (marci/…), for uploading
+//   dist/site/.well-known/agent-skills/marci-skill.zip the skill folder (marci/…), for uploading
 //                                                       to claude.ai or ChatGPT
+//   dist/marci-site.tar.gz                             all of dist/site, the one release asset
+//                                                       getmarci.ai unpacks
 //
 // Run: node scripts/build.mjs   (needs tar and zip on PATH)
 import { createHash } from "node:crypto";
@@ -33,7 +35,7 @@ const archive = join(wellKnown, `${front.name}.tar.gz`);
 execFileSync("tar", ["-czf", archive, "-C", pack, ...SKILL_FILES], {
   env: { ...process.env, COPYFILE_DISABLE: "1" },
 });
-execFileSync("zip", ["-qrX", join(site, "marci-skill.zip"), front.name], { cwd: join(dist, "pack") });
+execFileSync("zip", ["-qrX", join(wellKnown, "marci-skill.zip"), front.name], { cwd: join(dist, "pack") });
 
 const digest = `sha256:${createHash("sha256").update(readFileSync(archive)).digest("hex")}`;
 const index = {
@@ -50,4 +52,7 @@ const index = {
 };
 writeFileSync(join(wellKnown, "index.json"), `${JSON.stringify(index, null, 2)}\n`);
 rmSync(join(dist, "pack"), { recursive: true, force: true });
+execFileSync("tar", ["-czf", join(dist, "marci-site.tar.gz"), "-C", site, "."], {
+  env: { ...process.env, COPYFILE_DISABLE: "1" },
+});
 console.log(`✓ built marci ${front.metadata.version} into dist/site (${digest.slice(0, 19)}…)`);
